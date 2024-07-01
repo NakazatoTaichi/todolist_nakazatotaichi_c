@@ -1,0 +1,5 @@
+# created by virtualenv automatically
+
+todo-env/
+todo/__pycache__/
+todoproject/todoproject/__pycache__/
