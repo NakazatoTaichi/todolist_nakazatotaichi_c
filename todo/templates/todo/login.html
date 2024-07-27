@@ -1,24 +1,15 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>サインアップ画面</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
-<body>
-    <header>
-        <h1 style="margin-bottom: 0;">TODOアプリ</h1>
-    </header>
-    <main>
-        <div class="container" style="padding-top: 70px;">
-        <div class="row">
-            <div class="col-2"></div>
-            <div class="col-8 d-flex justify-content-center">
-                <br>
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="mt-5">
+{% extends 'base.html' %}
+
+{% block title %}ログイン画面{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 70px;">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8 d-flex justify-content-center">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mt-5">
                     {% if form.errors %}
                         <div class="alert alert-danger">
                             <ul>
@@ -33,45 +24,24 @@
                             </ul>
                         </div>
                     {% endif %}
-                        <table>
-                            <tr>
-                                <th>名前</th>
-                                <td>{{ form.username }}</td>
-                            </tr>
-                            <tr>
-                                <th>パスワード</th>
-                                <td>{{ form.password }}</td>
-                            </tr>
-                        </table>
-                        <div class="mt-3">
-                            <button type="submit" class="btn btn-primary">ログイン</button>
-                            <a href="{% url 'todo:signup' %}" class="btn btn-secondary">サインアップ</a>
-                        </div>
+                    <table>
+                        <tr>
+                            <th>名前</th>
+                            <td>{{ form.username }}</td>
+                        </tr>
+                        <tr>
+                            <th>パスワード</th>
+                            <td>{{ form.password }}</td>
+                        </tr>
+                    </table>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">ログイン</button>
+                        <a href="{% url 'todo:signup' %}" class="btn btn-secondary">サインアップ</a>
                     </div>
-                </form>
-            </div>
-
+                </div>
+            </form>
+        </div>
         <div class="col-2"></div>
-    </main>
-</body>
-</html>
-<style>
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    text-align: center;
-}
-
-header {
-    background-color: #333;
-    color: #fff;
-    padding: 10px 0;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-}
-</style>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    </div>
+</div>
+{% endblock %}
