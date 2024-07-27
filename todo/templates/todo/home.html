@@ -9,6 +9,10 @@
 <body>
     <header>
         <h1 style="margin-bottom: 0;">TODOアプリ</h1>
+        <form method="post" action="{% url 'todo:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-link">ログアウト</button>
+        </form>
     </header>
     <main>
         <div class="container">
