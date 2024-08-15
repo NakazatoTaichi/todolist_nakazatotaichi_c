@@ -11,4 +11,5 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='todo/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='todo:login'), name='logout'),
     path('home/', home, name='home'),
+    path('task/create/', views.task_create, name='task_create'),
 ]
