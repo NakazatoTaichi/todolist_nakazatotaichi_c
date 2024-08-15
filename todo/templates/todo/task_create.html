@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}タスク作成画面{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 70px;">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <h2>タスク作成</h2>
+            <form method="post">
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul>
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <table>
+                    <tr>
+                        <th>タイトル</th>
+                        <td>{{ form.title }}</td>
+                    </tr>
+                    <tr>
+                        <th>完了期限</th>
+                        <td>{{ form.due_date }}</td>
+                    </tr>
+                    <tr>
+                        <th>詳細</th>
+                        <td>{{ form.memo }}</td>
+                    </tr>
+                </table>
+                <button type="submit">保存</button>
+            </form>
+            <a href="{% url 'todo:home' %}">キャンセル</a>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>
+{% endblock %}
