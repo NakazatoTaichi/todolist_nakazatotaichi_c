@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}サインアップ画面{% endblock %}
+{% block title %}ホーム画面{% endblock %}
 
 {% block content %}
 <div class="container" style="padding-top: 70px;">
@@ -15,78 +15,53 @@
             <div id="today" class="tabcontent">
                 <section class="task-list">
                     <h2>今日のタスク</h2>
+                    {% for task in today_tasks %}
                     <div class="task row align-items-center">
                         <div class="col-8">
                             <div class="d-flex">
-                                <input type="checkbox" id="task1">
-                                <label for="task1">
-                                    <h4 style="margin: 0;">タスク1のタイトル</h4>
-                                    <p style="margin: 0;">詳細: タスクの詳細内容</p>
+                                <input type="checkbox" id="task{{ task.id }}" {% if task.status == 'completed' %}checked{% endif %}>
+                                <label for="task{{ task.id }}">
+                                    <h4 style="margin: 0;">{{ task.title }}</h4>
+                                    <p style="margin: 0;">詳細: {{ task.memo }}</p>
                                 </label>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="task-button">
-                                <button class="edit-button">編集</button>
-                                <button class="delete-button">削除</button>
+                                <a href="{% url 'todo:task_edit' task.id %}" class="edit-button">編集</a>
+                                <a href="{% url 'todo:task_delete' task.pk %}" class="delete-button" onclick="return confirmDelete(this);">削除</a>
                             </div>
                         </div>
                     </div>
-                    <div class="task row align-items-center">
-                        <div class="col-8">
-                            <div class="d-flex">
-                                <input type="checkbox" id="task2">
-                                <label for="task2">
-                                    <h4 style="margin: 0;">タスク2のタイトル</h4>
-                                    <p style="margin: 0;">詳細: タスクの詳細内容</p>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="task-button">
-                                <button class="edit-button">編集</button>
-                                <button class="delete-button">削除</button>
-                            </div>
-                        </div>
-                    </div>
+                    {% empty %}
+                    <p>今日のタスクはありません。</p>
+                    {% endfor %}
                 </section>
             </div>
 
             <div id="completed" class="tabcontent">
                 <section class="completed-tasks">
                     <h2>完了済みのタスク</h2>
+                    {% for task in completed_tasks %}
                     <div class="task completed row align-items-center">
                         <div class="col-10">
                             <div class="d-flex">
-                                <input type="checkbox" id="task3">
-                                <label for="task3">
-                                    <h4 style="margin: 0;">タスク3のタイトル</h4>
-                                    <p style="margin: 0;">詳細: タスクの詳細内容</p>
+                                <input type="checkbox" id="task{{ task.id }} checked disabled">
+                                <label for="task{{ task.id }}">
+                                    <h4 style="margin: 0;">{{ task.title }}</h4>
+                                    <p style="margin: 0;">詳細: {{ task.memo }}</p>
                                 </label>
                             </div>
                         </div>
                         <div class="col-2">
                             <div class="task-button">
-                                <button class="delete-button">削除</button>
+                                <a href="{% url 'todo:task_delete' task.pk %}" class="delete-button" onclick="return confirmDelete(this);">削除</a>
                             </div>
                         </div>
                     </div>
-                    <div class="task completed row align-items-center">
-                        <div class="col-10">
-                            <div class="d-flex">
-                                <input type="checkbox" id="task4">
-                                <label for="task4">
-                                    <h4 style="margin: 0;">タスク4のタイトル</h4>
-                                    <p style="margin: 0;">詳細: タスクの詳細内容</p>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <div class="task-button">
-                                <button class="delete-button">削除</button>
-                            </div>
-                        </div>
-                    </div>
+                    {% empty %}
+                    <p>完了済みのタスクはありません。</p>
+                    {% endfor %}
                 </section>
             </div>
             <a href="{% url 'todo:task_create' %}" class="add-task">+ 新しいタスクを追加</a>
@@ -226,5 +201,24 @@
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelector('.tablinks').click();
     });
+</script>
+<script type="text/javascript">
+    function confirmDelete(element) {
+        if (confirm("このタスクを本当に削除しますか？")) {
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = element.href;
+
+            var csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+        return false;
+    }
 </script>
 {% endblock %}
