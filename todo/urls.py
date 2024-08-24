@@ -2,6 +2,10 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 from .views import SignUpView, home
+from django.views.generic import DeleteView
+from .models import Task
+from django.urls import reverse_lazy
+
 
 
 app_name = 'todo'
@@ -12,4 +16,6 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='todo:login'), name='logout'),
     path('home/', home, name='home'),
     path('task/create/', views.task_create, name='task_create'),
+    path('task/edit/<int:pk>', views.task_edit, name='task_edit'),
+    path('task/delete/<int:pk>', DeleteView.as_view(model=Task, success_url=reverse_lazy('todo:home')), name='task_delete'),
 ]
