@@ -43,3 +43,6 @@ class TaskForm(forms.ModelForm):
         if due_date and due_date > now:
             return due_date
         raise ValidationError("期限は現在より未来でなければなりません。")
+
+class TaskStatusForm(forms.Form):
+    task_id = forms.IntegerField(widget=forms.HiddenInput())

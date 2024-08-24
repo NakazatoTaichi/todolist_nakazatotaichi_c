@@ -7,6 +7,7 @@ from django.views import View
 from .forms import SignUpForm
 from .models import Task
 from .forms import TaskForm
+from .forms import TaskStatusForm
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser
 
@@ -71,3 +72,17 @@ def task_edit(request, pk):
         'task': task
     }
     return render(request, 'todo/task_edit.html', context)
+
+def update_task_status(request):
+    if request.method == 'POST':
+        form = TaskStatusForm(request.POST)
+        if form.is_valid():
+            task_id = form.cleaned_data['task_id']
+            try:
+                task = Task.objects.get(id=task_id, user=request.user)
+                task.status = 'completed' if 'task_status' in request.POST else 'not_started'
+                task.save()
+                return redirect('todo:home')
+            except Task.DoesNotExist:
+                return redirect('todo:home')
+    return redirect('todo:home')
