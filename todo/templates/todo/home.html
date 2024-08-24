@@ -19,11 +19,15 @@
                     <div class="task row align-items-center">
                         <div class="col-8">
                             <div class="d-flex">
-                                <input type="checkbox" id="task{{ task.id }}" {% if task.status == 'completed' %}checked{% endif %}>
-                                <label for="task{{ task.id }}">
-                                    <h4 style="margin: 0;">{{ task.title }}</h4>
-                                    <p style="margin: 0;">詳細: {{ task.memo }}</p>
-                                </label>
+                                <form method="post" action="{% url 'todo:task_update_status' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="task_id" value="{{ task.id }}">
+                                    <input type="checkbox" id="task{{ task.id }}" name="task_status" onchange="return confirmStatusChange(this);">
+                                    <label for="task{{ task.id }}">
+                                        <h4 style="margin: 0;">{{ task.title }}</h4>
+                                        <p style="margin: 0;">詳細: {{ task.memo }}</p>
+                                    </label>
+                                </form>
                             </div>
                         </div>
                         <div class="col-4">
@@ -46,11 +50,10 @@
                     <div class="task completed row align-items-center">
                         <div class="col-10">
                             <div class="d-flex">
-                                <input type="checkbox" id="task{{ task.id }} checked disabled">
-                                <label for="task{{ task.id }}">
+                                <div class="content">
                                     <h4 style="margin: 0;">{{ task.title }}</h4>
                                     <p style="margin: 0;">詳細: {{ task.memo }}</p>
-                                </label>
+                                </div>
                             </div>
                         </div>
                         <div class="col-2">
@@ -133,8 +136,12 @@
         margin-right: 10px;
     }
 
-    .task.completed label {
+    .task.completed {
         color: #888;
+    }
+
+    .task.completed.content {
+        margin-right: 10px;
     }
 
     .edit-button, .delete-button {
@@ -217,6 +224,14 @@
             form.appendChild(csrfToken);
             document.body.appendChild(form);
             form.submit();
+        }
+        return false;
+    }
+</script>
+<script type="text/javascript">
+    function confirmStatusChange(checkbox) {
+        if (confirm(`このタスクを完了済みに変更しますか？`)) {
+            checkbox.form.submit();
         }
         return false;
     }
