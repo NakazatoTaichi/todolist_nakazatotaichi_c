@@ -5,12 +5,14 @@ from .views import SignUpView, home
 from django.views.generic import DeleteView
 from .models import Task
 from django.urls import reverse_lazy
+from django.shortcuts import redirect
 
 
 
 app_name = 'todo'
 
 urlpatterns = [
+    path('', lambda request: redirect('login/')),
     path('signup/', SignUpView.as_view(), name="signup"),
     path('login/', auth_views.LoginView.as_view(template_name='todo/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='todo:login'), name='logout'),
