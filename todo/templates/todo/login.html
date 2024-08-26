@@ -3,45 +3,78 @@
 {% block title %}ログイン画面{% endblock %}
 
 {% block content %}
-<div class="container" style="padding-top: 70px;">
-    <div class="row">
-        <div class="col-2"></div>
-        <div class="col-8 d-flex justify-content-center">
-            <form method="POST">
-                {% csrf_token %}
-                <div class="mt-5">
-                    {% if form.errors %}
-                        <div class="alert alert-danger">
-                            <ul>
-                                {% for field in form %}
-                                    {% for error in field.errors %}
+<div class="container" style="padding-top: 120px;">
+    <div class="row justify-content-center">
+        <div class="col-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">ログイン</h2>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
                                         <li>{{ error }}</li>
                                     {% endfor %}
-                                {% endfor %}
-                                {% for error in form.non_field_errors %}
-                                    <li>{{ error }}</li>
-                                {% endfor %}
-                            </ul>
+                                </ul>
+                            </div>
+                        {% endif %}
+                        <table>
+                            <tr>
+                                <th>
+                                    <label for="id_username">名前</label>
+                                </th>
+                                <td>{{ form.username }}</td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <label for="id_password">パスワード</label>
+                                </th>
+                                <td>{{ form.password }}</td>
+                            </tr>
+                        </table>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-primary btn-block">ログイン</button>
                         </div>
-                    {% endif %}
-                    <table>
-                        <tr>
-                            <th>名前</th>
-                            <td>{{ form.username }}</td>
-                        </tr>
-                        <tr>
-                            <th>パスワード</th>
-                            <td>{{ form.password }}</td>
-                        </tr>
-                    </table>
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-primary">ログイン</button>
-                        <a href="{% url 'todo:signup' %}" class="btn btn-secondary">サインアップ</a>
-                    </div>
+
+                        <div class="text-center mt-3">
+                            <a href="{% url 'todo:signup' %}" class="btn btn-link">サインアップはこちら</a>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
-        <div class="col-2"></div>
     </div>
 </div>
+<style>
+    table {
+        width: 100%;
+        border-collapse:separate;
+        border-spacing:10px 15px;
+    }
+    th {
+        width: 30%;
+        border-left: 3px solid #006400;
+        padding-left: 15px;
+        text-align: left;
+    }
+    th, td {
+        padding: 10px;
+    }
+    label {
+        margin: 0;
+    }
+    td {
+        width: 70%;
+    }
+    td input {
+        width: 100%;
+    }
+</style>
 {% endblock %}
