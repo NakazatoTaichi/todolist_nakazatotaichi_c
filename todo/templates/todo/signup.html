@@ -3,53 +3,88 @@
 {% block title %}サインアップ画面{% endblock %}
 
 {% block content %}
-<div class="container" style="padding-top: 70px;">
-    <div class="row">
-        <div class="col-2"></div>
-        <div class="col-8 d-flex justify-content-center">
-            <form method="POST">
-                {% csrf_token %}
-                <div class="mt-5">
-                    {% if form.errors %}
-                        <div class="alert alert-danger">
-                            <ul>
-                                {% for field in form %}
-                                    {% for error in field.errors %}
+<div class="container" style="padding-top: 120px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">サインアップ</h2>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
                                         <li>{{ error }}</li>
                                     {% endfor %}
-                                {% endfor %}
-                                {% for error in form.non_field_errors %}
-                                    <li>{{ error }}</li>
-                                {% endfor %}
-                            </ul>
+                                </ul>
+                            </div>
+                        {% endif %}
+                        <table>
+                            <tr>
+                                <th>
+                                    <label for="{{ form.username.id_for_label }}">名前</label>
+                                </th>
+                                <td>{{ form.username }}</td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <label for="{{ form.email.id_for_label }}">メールアドレス</label>
+                                </th>
+                                <td>{{ form.email }}</td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <label for="{{ form.password1.id_for_label }}">パスワード</label>
+                                </th>
+                                <td>{{ form.password1 }}</td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <label for="{{ form.password2.id_for_label }}">パスワード<br>（確認用）</label>
+                                </th>
+                                <td>{{ form.password2 }}</td>
+                            </tr>
+                        </table>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-primary">サインアップ</button>
+                            <a href="{% url 'todo:login' %}" class="btn btn-link">ログインはこちら</a>
                         </div>
-                    {% endif %}
-                    <table>
-                        <tr>
-                            <th>名前</th>
-                            <td>{{ form.username }}</td>
-                        </tr>
-                        <tr>
-                            <th>メールアドレス</th>
-                            <td>{{ form.email }}</td>
-                        </tr>
-                        <tr>
-                            <th>パスワード</th>
-                            <td>{{ form.password1 }}</td>
-                        </tr>
-                        <tr>
-                            <th>パスワード（確認用）</th>
-                            <td>{{ form.password2 }}</td>
-                        </tr>
-                    </table>
-                    <div class="mt-5">
-                        <button type="submit" class="btn btn-primary">サインアップ</button>
-                        <a href="{% url 'todo:login' %}" class="btn btn-secondary">ログイン</a>
-                    </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
-        <div class="col-2"></div>
     </div>
 </div>
+<style>
+    table {
+        width: 100%;
+        border-collapse:separate;
+        border-spacing:10px 15px;
+    }
+    th {
+        width: 30%;
+        border-left: 3px solid #006400;
+        padding-left: 15px;
+        text-align: left;
+    }
+    label {
+        margin: 0;
+    }
+    th, td {
+        padding: 10px;
+    }
+    td {
+        width: 70%;
+    }
+    td input {
+        width: 100%;
+    }
+</style>
 {% endblock %}
+
