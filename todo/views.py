@@ -35,9 +35,17 @@ def home(request):
     today_tasks = Task.objects.filter(due_date__date=now.date(), status='not_started', user=request.user)
     completed_tasks = Task.objects.filter(status='completed', user=request.user)
 
+    # 新規作成用フォーム
+    task_create_form = TaskForm()
+
+    # 編集用フォーム（初期状態では空）
+    task_edit_form = TaskForm()
+
     context = {
         'today_tasks': today_tasks,
-        'completed_tasks': completed_tasks
+        'completed_tasks': completed_tasks,
+        'task_create_form': task_create_form,
+        'task_edit_form': task_edit_form,
     }
 
     return render(request, 'todo/home.html', context)
@@ -53,7 +61,7 @@ def task_create(request):
             return redirect('todo:home')
     else:
         form = TaskForm()
-    return render(request, 'todo/task_create.html', {'form': form})
+    return redirect('todo:home')
 
 @login_required
 def task_edit(request, pk):
@@ -66,7 +74,6 @@ def task_edit(request, pk):
             return redirect('todo:home')
     else:
         form = TaskForm(instance=task)
-
     context = {
         'form': form,
         'task': task
