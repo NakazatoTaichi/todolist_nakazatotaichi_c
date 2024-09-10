@@ -74,11 +74,8 @@ def task_edit(request, pk):
             return redirect('todo:home')
     else:
         form = TaskForm(instance=task)
-    context = {
-        'form': form,
-        'task': task
-    }
-    return render(request, 'todo/task_edit.html', context)
+    return redirect('todo:home')
+
 
 def update_task_status(request):
     if request.method == 'POST':
