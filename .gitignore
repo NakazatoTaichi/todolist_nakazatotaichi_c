@@ -3,3 +3,9 @@
 todo-env/
 todo/__pycache__/
 todoproject/todoproject/__pycache__/
+db.sqlite3
+.vscode
+__pycache__
+*.pyc
+.DS_Store
+.env
