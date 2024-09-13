@@ -9,12 +9,12 @@
         <div class="col-8">
             <div class="tab">
                 <button class="tablinks" onclick="openTab(event, 'today')">今日のタスク</button>
+                <button class="tablinks" onclick="openTab(event, 'createTasks')">作成したタスク</button>
                 <button class="tablinks" onclick="openTab(event, 'completed')">完了済みのタスク</button>
             </div>
 
             <div id="today" class="tabcontent">
                 <section class="task-list">
-                    <h2>今日のタスク</h2>
                     {% for task in today_tasks %}
                     <div class="task row align-items-center">
                         <div class="col-8">
@@ -25,7 +25,8 @@
                                     <input type="checkbox" id="task{{ task.id }}" name="task_status" onchange="return confirmStatusChange(this);">
                                     <label for="task{{ task.id }}">
                                         <h4 style="margin: 0;">{{ task.title }}</h4>
-                                        <p style="margin: 0;">詳細: {{ task.memo }}</p>
+                                        <p style="margin: 0;">詳細：{{ task.memo }}</p>
+                                        <p style="margin: 0;">期限：{{ task.due_date|date:"G:i" }}まで</p>
                                     </label>
                                 </form>
                             </div>
@@ -66,17 +67,46 @@
                     {% endfor %}
                 </section>
             </div>
-
+            <div id="createTasks" class="tabcontent">
+                <section class="task-list">
+                    {% for task in create_tasks %}
+                    <div class="task row align-items-center">
+                        <div class="col-8">
+                            <div class="d-flex">
+                                <form method="post" action="{% url 'todo:task_update_status' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="task_id" value="{{ task.id }}">
+                                    <input type="checkbox" id="task{{ task.id }}" name="task_status" onchange="return confirmStatusChange(this);">
+                                    <label for="task{{ task.id }}">
+                                        <h4 style="margin: 0;">{{ task.title }}</h4>
+                                        <p style="margin: 0;">詳細：{{ task.memo }}</p>
+                                        <p style="margin: 0;">期限：{{ task.due_date|date:"n月j日G:i" }}まで</p>
+                                    </label>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="task-button">
+                                <a href="{% url 'todo:task_edit' task.id %}" class="edit-button">編集</a>
+                                <a href="{% url 'todo:task_delete' task.pk %}" class="delete-button" onclick="return confirmDelete(this);">削除</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>作成したタスクはありません。</p>
+                    {% endfor %}
+                </section>
+            </div>
             <div id="completed" class="tabcontent">
                 <section class="completed-tasks">
-                    <h2>完了済みのタスク</h2>
                     {% for task in completed_tasks %}
                     <div class="task completed row align-items-center">
                         <div class="col-10">
                             <div class="d-flex">
                                 <div class="content">
                                     <h4 style="margin: 0;">{{ task.title }}</h4>
-                                    <p style="margin: 0;">詳細: {{ task.memo }}</p>
+                                    <p style="margin: 0;">詳細：{{ task.memo }}</p>
+                                    <p style="margin: 0;">完了した日：{{ task.updated_at|date:"n月j日G:i" }}</p>
                                 </div>
                             </div>
                         </div>
@@ -183,10 +213,8 @@
         text-align: left;
         max-width: 600px;
         margin: 0 auto;
-    }
-
-    .task-list h2, .completed-tasks h2 {
-        margin-top: 0;
+        max-height: 580px;
+        overflow-y: auto;
     }
 
     .task {
@@ -360,6 +388,8 @@
     function confirmStatusChange(checkbox) {
         if (confirm(`このタスクを完了済みに変更しますか？`)) {
             checkbox.form.submit();
+        } else {
+            checkbox.checked = false;
         }
         return false;
     }

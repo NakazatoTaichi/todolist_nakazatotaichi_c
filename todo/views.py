@@ -10,6 +10,7 @@ from .forms import TaskForm
 from .forms import TaskStatusForm
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser
+from django.db.models import Q
 
 
 
@@ -31,9 +32,20 @@ def home(request):
     # 現在の日付と時刻
     now = timezone.now()
 
-    # 現在の日付と時刻に基づいて今日のタスクと完了済みのタスクを取得
-    today_tasks = Task.objects.filter(due_date__date=now.date(), status='not_started', user=request.user)
-    completed_tasks = Task.objects.filter(status='completed', user=request.user)
+    today_tasks = Task.objects.filter(
+        due_date__date=now.date(),
+        status='not_started',
+        user=request.user
+    )
+    create_tasks = Task.objects.filter(
+        ~Q(due_date__date=now.date()),
+        status='not_started',
+        user=request.user
+    )
+    completed_tasks = Task.objects.filter(
+        status='completed',
+        user=request.user
+    )
 
     # 新規作成用フォーム
     task_create_form = TaskForm()
@@ -43,6 +55,7 @@ def home(request):
 
     context = {
         'today_tasks': today_tasks,
+        'create_tasks': create_tasks,
         'completed_tasks': completed_tasks,
         'task_create_form': task_create_form,
         'task_edit_form': task_edit_form,
