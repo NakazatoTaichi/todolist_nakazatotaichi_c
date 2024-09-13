@@ -260,6 +260,8 @@
     function confirmStatusChange(checkbox) {
         if (confirm(`このタスクを完了済みに変更しますか？`)) {
             checkbox.form.submit();
+        } else {
+            checkbox.checked = false;
         }
         return false;
     }
