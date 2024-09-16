@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.views import LoginView as AuthLoginView
+from django.contrib import messages
 from django.views.generic import TemplateView, CreateView
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -11,7 +13,7 @@ from .forms import TaskStatusForm
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser
 from django.db.models import Q
-
+from django.views.generic.edit import DeleteView
 
 
 class SignUpView(View):
@@ -23,9 +25,21 @@ class SignUpView(View):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'ようこそ！')
             return redirect('todo:home')
         return render(request, 'todo/signup.html', {'form': form})
 
+class LoginView(AuthLoginView):
+    template_name = 'todo/login.html'
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'ログインしました。')
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'ログインに失敗しました。名前またはパスワードが間違っています。')
+        return super().form_invalid(form)
 
 @login_required
 def home(request):
@@ -67,6 +81,7 @@ def task_create(request):
             task = form.save(commit=False)
             task.user = CustomUser.objects.get(id=request.user.id)
             task.save()
+            messages.success(request, '新しいタスクを追加しました。')
             return redirect('todo:home')
     else:
         form = TaskForm()
@@ -80,6 +95,7 @@ def task_edit(request, pk):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
+            messages.success(request, 'タスクを編集しました。')
             return redirect('todo:home')
     else:
         form = TaskForm(instance=task)
@@ -99,8 +115,10 @@ def update_task_status(request):
                 task = Task.objects.get(id=task_id, user=request.user)
                 task.status = 'completed' if 'task_status' in request.POST else 'not_started'
                 task.save()
+                messages.success(request, task.title + 'を完了済みにしました。')
                 return redirect('todo:home')
             except Task.DoesNotExist:
+                messages.error(request, 'タスクが存在しません。')
                 return redirect('todo:home')
     return redirect('todo:home')
 
@@ -110,6 +128,21 @@ def restoration_task_status(request, pk):
         task = get_object_or_404(Task, id=pk, user=request.user)
         task.status = 'not_started'  # ステータスを復元（未着手状態にする）
         task.save()
+        messages.success(request, task.title + 'を復元しました。')
         return redirect('todo:home')
     except Task.DoesNotExist:
+        messages.error(request, 'タスクが存在しません。')
         return redirect('todo:home')
+
+class TaskDeleteView(DeleteView):
+    model = Task
+    success_url = reverse_lazy('todo:home')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'タスクが削除されました。')
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'タスクの削除に失敗しました。')
+        return super().form_invalid(form)
