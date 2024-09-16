@@ -21,4 +21,5 @@ urlpatterns = [
     path('task/edit/<int:pk>', views.task_edit, name='task_edit'),
     path('task/delete/<int:pk>', DeleteView.as_view(model=Task, success_url=reverse_lazy('todo:home')), name='task_delete'),
     path('task/update_status/', views.update_task_status, name='task_update_status'),
+    path('task/restoration_status/<int:pk>', views.restoration_task_status, name='task_restoration_status'),
 ]

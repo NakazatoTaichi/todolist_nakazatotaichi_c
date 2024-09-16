@@ -89,6 +89,7 @@ def task_edit(request, pk):
     }
     return render(request, 'todo/task_edit.html', context)
 
+@login_required
 def update_task_status(request):
     if request.method == 'POST':
         form = TaskStatusForm(request.POST)
@@ -102,3 +103,13 @@ def update_task_status(request):
             except Task.DoesNotExist:
                 return redirect('todo:home')
     return redirect('todo:home')
+
+@login_required
+def restoration_task_status(request, pk):
+    try:
+        task = get_object_or_404(Task, id=pk, user=request.user)
+        task.status = 'not_started'  # ステータスを復元（未着手状態にする）
+        task.save()
+        return redirect('todo:home')
+    except Task.DoesNotExist:
+        return redirect('todo:home')
