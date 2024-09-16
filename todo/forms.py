@@ -3,6 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django import forms
 from .models import CustomUser
 from .models import Task
+from .models import Goal
 import pytz
 from datetime import datetime
 from django.core.exceptions import ValidationError
@@ -46,3 +47,11 @@ class TaskForm(forms.ModelForm):
 
 class TaskStatusForm(forms.Form):
     task_id = forms.IntegerField(widget=forms.HiddenInput())
+
+class GoalForm(forms.ModelForm):
+    class Meta:
+        model = Goal
+        fields = ['title']
+
+    def save(self, commit=True):
+        return super().save(commit=commit)

@@ -23,4 +23,6 @@ urlpatterns = [
     path('task/delete/<int:pk>', TaskDeleteView.as_view(), name='task_delete'),
     path('task/update_status/', views.update_task_status, name='task_update_status'),
     path('task/restoration_status/<int:pk>', views.restoration_task_status, name='task_restoration_status'),
+    path('set_goal/', views.set_goal, name='set_goal'),
+    path('delete_goals/', views.delete_goals, name='delete_goals'),
 ]
