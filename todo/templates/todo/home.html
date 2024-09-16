@@ -3,6 +3,24 @@
 {% block title %}ホーム画面{% endblock %}
 
 {% block content %}
+<div class="my-goal-list">
+    <div class="goal-content">
+        <h3 style="text-align: start; font-weight: bold;">今月の目標</h3>
+        {% for goal in my_goals %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <p style="margin: 0; font-weight: bold">{{goal.title}}</p>
+            </div>
+        </div>
+        {% empty %}
+            <p>目標が設定されていません。</p>
+        {% endfor %}
+            <a href="{% url 'todo:set_goal' %}" class="btn btn-info">目標を設定</a>
+        {% if my_goals %}
+            <a href="{% url 'todo:delete_goals' %}" class="btn btn-danger" onclick="return myGoalsDelete(this);">目標を解除</a>
+        {% endif %}
+    </div>
+</div>
 <div class="container" style="padding-top: 70px;">
     <div class="row">
         <div class="col-2"></div>
@@ -161,6 +179,22 @@
 </div>
 
 <style>
+    .my-goal-list {
+        position: fixed;
+        z-index: 1;
+        top: 100px;
+        left: 30px;
+        height: auto;
+        width: 390px;
+        border: 2px solid #ccc;
+        box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 5%;
+    }
+    .goal-content {
+        width: 80%;
+        margin: 0 auto;
+        padding: 30px 0;
+    }
     .messages-content {
         height: 60px;
     }
@@ -376,6 +410,24 @@
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelector('.tablinks').click();
     });
+
+    function myGoalsDelete(element) {
+        if (confirm("設定した目標を本当に解除しますか？")) {
+            let form = document.createElement('form');
+            form.method = 'POST';
+            form.action = element.href;
+
+            let csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+        return false;
+    }
 
     function confirmDelete(element) {
         if (confirm("このタスクを本当に削除しますか？")) {

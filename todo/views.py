@@ -10,10 +10,13 @@ from .forms import SignUpForm
 from .models import Task
 from .forms import TaskForm
 from .forms import TaskStatusForm
+from .forms import GoalForm
+from .models import Goal
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser
 from django.db.models import Q
 from django.views.generic.edit import DeleteView
+from django.core.exceptions import ValidationError
 
 
 class SignUpView(View):
@@ -46,6 +49,9 @@ def home(request):
     # 現在の日付と時刻
     now = timezone.now()
 
+    my_goals = Goal.objects.filter(
+        user=request.user
+    )
     today_tasks = Task.objects.filter(
         due_date__date=now.date(),
         status='not_started',
@@ -65,6 +71,7 @@ def home(request):
     task_create_form = TaskForm()
 
     context = {
+        'my_goals': my_goals,
         'today_tasks': today_tasks,
         'create_tasks': create_tasks,
         'completed_tasks': completed_tasks,
@@ -146,3 +153,29 @@ class TaskDeleteView(DeleteView):
     def form_invalid(self, form):
         messages.error(self.request, 'タスクの削除に失敗しました。')
         return super().form_invalid(form)
+
+@login_required
+def set_goal(request):
+    if request.method == 'POST':
+        form = GoalForm(request.POST)
+        if form.is_valid():
+            if Goal.objects.filter(user=request.user).count() >= 3:
+                form.add_error(None, '目標は最大３つまで設定することができます。')
+            else:
+                goal = form.save(commit=False)
+                goal.user = request.user
+                goal.save()
+                messages.success(request, '目標を設定しました。')
+                return redirect('todo:home')
+    else:
+        form = GoalForm()
+    return render(request, 'todo/set_goal.html', {'form': form})
+
+@login_required
+def delete_goals(request):
+    if request.method == 'POST':
+        Goal.objects.filter(user=request.user).delete()
+        messages.success(request, '設定した目標を削除しました。')
+        return redirect('todo:home')
+    else:
+        return redirect('todo:home')
