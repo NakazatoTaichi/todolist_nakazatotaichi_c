@@ -33,32 +33,8 @@
                         </div>
                         <div class="col-4">
                             <div class="task-button">
-                                <a href="#" class="edit-button open-task-edit-modal" data-task-id="{{ task.id }}">編集</a>
+                                <a href="{% url 'todo:task_edit' task.id %}" class="edit-button">編集</a>
                                 <a href="{% url 'todo:task_delete' task.pk %}" class="delete-button" onclick="return confirmDelete(this);">削除</a>
-                            </div>
-                        </div>
-                        <div id="taskEditModal{{task.id}}" class="modal">
-                            <div class="modal-content">
-                                <span class="close">&times;</span>
-                                <h2>タスク編集</h2>
-                                <form id="editTaskForm" method="post" action="{% url 'todo:task_edit' task.id %}">
-                                    {% csrf_token %}
-                                    <table>
-                                        <tr>
-                                            <th>タイトル</th>
-                                            <td>{{ task_edit_form.title }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>完了期限</th>
-                                            <td>{{ task_edit_form.due_date }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>詳細</th>
-                                            <td>{{ task_edit_form.memo }}</td>
-                                        </tr>
-                                    </table>
-                                    <button type="submit" class="btn btn-primary">更新</button>
-                                </form>
                             </div>
                         </div>
                     </div>
@@ -397,29 +373,9 @@
     document.querySelectorAll('.open-task-create-modal').forEach(function(link) {
         link.addEventListener('click', function(event) {
             event.preventDefault();
-            document.getElementById('taskCreateModal').style.display = 'block';
-        });
-    });
-
-    document.querySelector('.close').addEventListener('click', function() {
-        document.getElementById('taskCreateModal').style.display = 'none';
-    });
-
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('taskCreateModal')) {
-            document.getElementById('taskCreateModal').style.display = 'none';
-        }
-    }
-
-    document.querySelectorAll('.open-task-edit-modal').forEach(function(link) {
-        link.addEventListener('click', function(event) {
-            event.preventDefault();
-
-            // カスタムデータ属性からタスクIDを取得
-            const taskId = link.getAttribute('data-task-id');
 
             // 対象のモーダルウィンドウを開く
-            const modal = document.querySelector(`#taskEditModal${taskId}`);
+            const modal = document.querySelector(`#taskCreateModal`);
             if (modal) {
                 modal.style.display = 'block';
             }

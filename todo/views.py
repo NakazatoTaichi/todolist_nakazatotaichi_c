@@ -47,18 +47,14 @@ def home(request):
         user=request.user
     )
 
-    # 新規作成用フォーム
+    # 新しいタスク追加のフォーム
     task_create_form = TaskForm()
-
-    # 編集用フォーム（初期状態では空）
-    task_edit_form = TaskForm()
 
     context = {
         'today_tasks': today_tasks,
         'create_tasks': create_tasks,
         'completed_tasks': completed_tasks,
         'task_create_form': task_create_form,
-        'task_edit_form': task_edit_form,
     }
 
     return render(request, 'todo/home.html', context)
@@ -87,8 +83,11 @@ def task_edit(request, pk):
             return redirect('todo:home')
     else:
         form = TaskForm(instance=task)
-    return redirect('todo:home')
-
+        context = {
+        'form': form,
+        'task': task
+    }
+    return render(request, 'todo/task_edit.html', context)
 
 def update_task_status(request):
     if request.method == 'POST':
