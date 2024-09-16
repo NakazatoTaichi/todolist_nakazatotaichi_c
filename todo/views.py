@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.views import LoginView as AuthLoginView
 from django.contrib import messages
 from django.views.generic import TemplateView, CreateView
 from django.urls import reverse_lazy
@@ -12,7 +13,7 @@ from .forms import TaskStatusForm
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser
 from django.db.models import Q
-
+from django.views.generic.edit import DeleteView
 
 
 class SignUpView(View):
@@ -28,6 +29,17 @@ class SignUpView(View):
             return redirect('todo:home')
         return render(request, 'todo/signup.html', {'form': form})
 
+class LoginView(AuthLoginView):
+    template_name = 'todo/login.html'
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'ログインしました。')
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'ログインに失敗しました。名前またはパスワードが間違っています。')
+        return super().form_invalid(form)
 
 @login_required
 def home(request):
@@ -121,3 +133,16 @@ def restoration_task_status(request, pk):
     except Task.DoesNotExist:
         messages.error(request, 'タスクが存在しません。')
         return redirect('todo:home')
+
+class TaskDeleteView(DeleteView):
+    model = Task
+    success_url = reverse_lazy('todo:home')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'タスクが削除されました。')
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'タスクの削除に失敗しました。')
+        return super().form_invalid(form)
