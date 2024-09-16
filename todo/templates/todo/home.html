@@ -7,6 +7,17 @@
     <div class="row">
         <div class="col-2"></div>
         <div class="col-8">
+            <div class="messages-content">
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            </div>
             <div class="tab">
                 <button class="tablinks" onclick="openTab(event, 'today')">今日のタスク</button>
                 <button class="tablinks" onclick="openTab(event, 'createTasks')">作成したタスク</button>
@@ -150,6 +161,15 @@
 </div>
 
 <style>
+    .messages-content {
+        height: 60px;
+    }
+    .messages {
+        margin-top: 5px;
+    }
+    .alert {
+        margin: 0;
+    }
     .tab {
         overflow: hidden;
         display: flex;
@@ -253,7 +273,7 @@
         border-radius: 5px;
         text-align: center;
         cursor: pointer;
-        margin-top: 20px;
+        margin-top: 10px;
     }
 
     .add-task:hover {
@@ -328,6 +348,13 @@
     }
 </style>
 <script type="text/javascript">
+    setTimeout(function() {
+        let messages = document.querySelector('.messages');
+        if (messages) {
+        messages.style.display = 'none';
+        }
+    }, 5000);  // 5秒後にメッセージを非表示にする
+
     function openTab(evt, tabName) {
         var i, tabcontent, tablinks;
 

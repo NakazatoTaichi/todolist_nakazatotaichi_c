@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
+from django.contrib import messages
 from django.views.generic import TemplateView, CreateView
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -23,6 +24,7 @@ class SignUpView(View):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'ようこそ！')
             return redirect('todo:home')
         return render(request, 'todo/signup.html', {'form': form})
 
@@ -67,6 +69,7 @@ def task_create(request):
             task = form.save(commit=False)
             task.user = CustomUser.objects.get(id=request.user.id)
             task.save()
+            messages.success(request, '新しいタスクを追加しました。')
             return redirect('todo:home')
     else:
         form = TaskForm()
@@ -80,6 +83,7 @@ def task_edit(request, pk):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
+            messages.success(request, 'タスクを編集しました。')
             return redirect('todo:home')
     else:
         form = TaskForm(instance=task)
@@ -99,8 +103,10 @@ def update_task_status(request):
                 task = Task.objects.get(id=task_id, user=request.user)
                 task.status = 'completed' if 'task_status' in request.POST else 'not_started'
                 task.save()
+                messages.success(request, task.title + 'を完了済みにしました。')
                 return redirect('todo:home')
             except Task.DoesNotExist:
+                messages.error(request, 'タスクが存在しません。')
                 return redirect('todo:home')
     return redirect('todo:home')
 
@@ -110,6 +116,8 @@ def restoration_task_status(request, pk):
         task = get_object_or_404(Task, id=pk, user=request.user)
         task.status = 'not_started'  # ステータスを復元（未着手状態にする）
         task.save()
+        messages.success(request, task.title + 'を復元しました。')
         return redirect('todo:home')
     except Task.DoesNotExist:
+        messages.error(request, 'タスクが存在しません。')
         return redirect('todo:home')
