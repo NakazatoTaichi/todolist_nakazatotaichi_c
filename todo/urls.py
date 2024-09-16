@@ -7,6 +7,8 @@ from .views import TaskDeleteView
 from .models import Task
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 
@@ -25,4 +27,4 @@ urlpatterns = [
     path('task/restoration_status/<int:pk>', views.restoration_task_status, name='task_restoration_status'),
     path('set_goal/', views.set_goal, name='set_goal'),
     path('delete_goals/', views.delete_goals, name='delete_goals'),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
