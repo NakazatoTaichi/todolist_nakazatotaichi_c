@@ -47,10 +47,14 @@ def home(request):
         user=request.user
     )
 
+    # 新しいタスク追加のフォーム
+    task_create_form = TaskForm()
+
     context = {
         'today_tasks': today_tasks,
         'create_tasks': create_tasks,
-        'completed_tasks': completed_tasks
+        'completed_tasks': completed_tasks,
+        'task_create_form': task_create_form,
     }
 
     return render(request, 'todo/home.html', context)
@@ -66,7 +70,7 @@ def task_create(request):
             return redirect('todo:home')
     else:
         form = TaskForm()
-    return render(request, 'todo/task_create.html', {'form': form})
+    return redirect('todo:home')
 
 @login_required
 def task_edit(request, pk):
@@ -79,8 +83,7 @@ def task_edit(request, pk):
             return redirect('todo:home')
     else:
         form = TaskForm(instance=task)
-
-    context = {
+        context = {
         'form': form,
         'task': task
     }
