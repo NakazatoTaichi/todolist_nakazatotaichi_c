@@ -172,7 +172,7 @@
             <div id="taskCreateModal" class="modal">
                 <div class="modal-content">
                     <span class="close">&times;</span>
-                    <h2>タスク作成</h2>
+                    <h3 style="font-weight: bold;">タスク作成</h3>
                     <form method="post" action="{% url 'todo:task_create' %}">
                         {% csrf_token %}
                         {% if form.errors %}
@@ -418,10 +418,10 @@
 
     .modal-content {
         background-color: #fefefe;
-        margin: 15% auto;
+        margin: 10% auto;
         padding: 20px;
         border: 1px solid #888;
-        width: 50%;
+        width: 40%;
         position: relative;
     }
 
@@ -467,6 +467,34 @@
 
     .btn-primary:hover {
         background-color: #0056b3;
+    }
+
+    table {
+        width: 100%;
+        border-collapse:separate;
+        border-spacing:10px 15px;
+    }
+
+    th {
+        width: 20%;
+        border-left: 3px solid #006400;
+        padding-left: 15px;
+        text-align: left;
+    }
+    th, td {
+        padding: 10px;
+    }
+    label {
+        margin: 0;
+    }
+    td {
+        width: 80%;
+    }
+    td input {
+        width: 100%;
+    }
+    td textarea {
+        width: 100%;
     }
 </style>
 <script type="text/javascript">
