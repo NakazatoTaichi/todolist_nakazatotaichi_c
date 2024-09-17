@@ -138,13 +138,6 @@
                     <div class="task completed row align-items-center">
                         <div class="col-9">
                             <div class="d-flex align-items-center p-2">
-                                <div class="task-input">
-                                    <form method="post" action="{% url 'todo:task_update_status' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="task_id" value="{{ task.id }}">
-                                        <input type="checkbox" id="task{{ task.id }}" name="task_status" onchange="return confirmStatusChange(this);">
-                                    </form>
-                                </div>
                                 <div class="task-title">
                                     <h4 style="margin: 0; padding-right: 10px; font-weight: bold;">{{ task.title }}</h4>
                                 </div>
