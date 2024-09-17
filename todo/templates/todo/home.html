@@ -3,6 +3,7 @@
 {% block title %}ホーム画面{% endblock %}
 
 {% block content %}
+{% load static %}
 <div class="my-goal-list">
     <div class="goal-content">
         <h3 style="text-align: start; font-weight: bold;">今月の目標</h3>
@@ -37,30 +38,44 @@
             {% endif %}
             </div>
             <div class="tab">
-                <button class="tablinks" onclick="openTab(event, 'today')">今日のタスク</button>
-                <button class="tablinks" onclick="openTab(event, 'createTasks')">作成したタスク</button>
-                <button class="tablinks" onclick="openTab(event, 'completed')">完了済みのタスク</button>
+                <button class="tab-links" style="font-weight: bold;" onclick="openTab(event, 'today')">今日のタスク</button>
+                <button class="tab-links" style="font-weight: bold;" onclick="openTab(event, 'createTasks')">作成したタスク</button>
+                <button class="tab-links" style="font-weight: bold;" onclick="openTab(event, 'completed')">完了済みのタスク</button>
             </div>
 
-            <div id="today" class="tabcontent">
+            <div id="today" class="tab-content">
                 <section class="task-list">
                     {% for task in today_tasks %}
                     <div class="task row align-items-center">
-                        <div class="col-8">
-                            <div class="d-flex">
-                                <form method="post" action="{% url 'todo:task_update_status' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="task_id" value="{{ task.id }}">
-                                    <input type="checkbox" id="task{{ task.id }}" name="task_status" onchange="return confirmStatusChange(this);">
-                                    <label for="task{{ task.id }}">
-                                        <h4 style="margin: 0;">{{ task.title }}</h4>
-                                        <p style="margin: 0;">詳細：{{ task.memo }}</p>
-                                        <p style="margin: 0;">期限：{{ task.due_date|date:"G:i" }}まで</p>
-                                    </label>
-                                </form>
+                        <div class="col-9">
+                            <div class="d-flex align-items-center p-2">
+                                <div class="task-input">
+                                    <form method="post" action="{% url 'todo:task_update_status' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                                        <input type="checkbox" id="task{{ task.id }}" name="task_status" onchange="return confirmStatusChange(this);">
+                                    </form>
+                                </div>
+                                <div class="task-title">
+                                    <h4 style="margin: 0; padding-right: 5px; font-weight: bold;">{{ task.title }}</h4>
+                                </div>
+                                <div class="task-due-date-icon">
+                                    <img src="{% static 'todo/images/砂時計アイコン.jpeg' %}" alt="画像" width="23px" height="25px">
+                                </div>
+                                <div class="task-due-date">
+                                    <h5 style="margin: 0; color: #DF5656; font-weight: bold;">{{ task.due_date|date:"G:i" }}まで</h5>
+                                </div>
+                            </div>
+                            <div class="item task-detail">
+                                <button class="js-accordion">
+                                    <div><p style="margin: 0;">詳細</p></div>
+                                </button>
+                                <div class="accordion-box mt-1">
+                                    <p style="margin: 0;">{{ task.memo }}</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <div class="task-button">
                                 <a href="{% url 'todo:task_edit' task.id %}" class="edit-button">編集</a>
                                 <a href="{% url 'todo:task_delete' task.pk %}" class="delete-button" onclick="return confirmDelete(this);">削除</a>
@@ -72,25 +87,39 @@
                     {% endfor %}
                 </section>
             </div>
-            <div id="createTasks" class="tabcontent">
+            <div id="createTasks" class="tab-content">
                 <section class="task-list">
                     {% for task in create_tasks %}
                     <div class="task row align-items-center">
-                        <div class="col-8">
-                            <div class="d-flex">
-                                <form method="post" action="{% url 'todo:task_update_status' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="task_id" value="{{ task.id }}">
-                                    <input type="checkbox" id="task{{ task.id }}" name="task_status" onchange="return confirmStatusChange(this);">
-                                    <label for="task{{ task.id }}">
-                                        <h4 style="margin: 0;">{{ task.title }}</h4>
-                                        <p style="margin: 0;">詳細：{{ task.memo }}</p>
-                                        <p style="margin: 0;">期限：{{ task.due_date|date:"n月j日G:i" }}まで</p>
-                                    </label>
-                                </form>
+                        <div class="col-9">
+                            <div class="d-flex align-items-center p-2">
+                                <div class="task-input">
+                                    <form method="post" action="{% url 'todo:task_update_status' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                                        <input type="checkbox" id="task{{ task.id }}" name="task_status" onchange="return confirmStatusChange(this);">
+                                    </form>
+                                </div>
+                                <div class="task-title">
+                                    <h4 style="margin: 0; padding-right: 5px; font-weight: bold;">{{ task.title }}</h4>
+                                </div>
+                                <div class="task-due-date-icon">
+                                    <img src="{% static 'todo/images/砂時計アイコン.jpeg' %}" alt="画像" width="23px" height="25px">
+                                </div>
+                                <div class="task-due-date">
+                                    <h5 style="margin: 0; color: #DF5656; font-weight: bold;">{{ task.due_date|date:"n月j日G:i" }}まで</h5>
+                                </div>
+                            </div>
+                            <div class="item task-detail">
+                                <button class="js-accordion">
+                                    <div><p style="margin: 0;">詳細</p></div>
+                                </button>
+                                <div class="accordion-box mt-1">
+                                    <p style="margin: 0;">{{ task.memo }}</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <div class="task-button">
                                 <a href="{% url 'todo:task_edit' task.id %}" class="edit-button">編集</a>
                                 <a href="{% url 'todo:task_delete' task.pk %}" class="delete-button" onclick="return confirmDelete(this);">削除</a>
@@ -102,20 +131,33 @@
                     {% endfor %}
                 </section>
             </div>
-            <div id="completed" class="tabcontent">
+            <div id="completed" class="tab-content">
                 <section class="completed-tasks">
                     {% for task in completed_tasks %}
+
                     <div class="task completed row align-items-center">
-                        <div class="col-8">
-                            <div class="d-flex">
-                                <div class="content">
-                                    <h4 style="margin: 0;">{{ task.title }}</h4>
-                                    <p style="margin: 0;">詳細：{{ task.memo }}</p>
-                                    <p style="margin: 0;">完了した日：{{ task.updated_at|date:"n月j日G:i" }}</p>
+                        <div class="col-9">
+                            <div class="d-flex align-items-center p-2">
+                                <div class="task-title">
+                                    <h4 style="margin: 0; padding-right: 10px; font-weight: bold;">{{ task.title }}</h4>
+                                </div>
+                                <div class="task-due-date-icon">
+                                    <img src="{% static 'todo/images/チェックボックスアイコン.jpeg' %}" alt="画像" width="23px" height="25px">
+                                </div>
+                                <div class="task-due-date">
+                                    <h5 style="margin: 0; color: #DF5656; font-weight: bold;">{{ task.updated_at|date:"n月j日G:i" }}</h5>
+                                </div>
+                            </div>
+                            <div class="item task-detail">
+                                <button class="js-accordion">
+                                    <div><p style="margin: 0;">詳細</p></div>
+                                </button>
+                                <div class="accordion-box mt-1">
+                                    <p style="margin: 0;">{{ task.memo }}</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <div class="task-button">
                                 <a href="{% url 'todo:task_restoration_status' task.pk %}" class="restoration-button" onclick="return submitRestorationForm(this);">復元</a>
                                 <a href="{% url 'todo:task_delete' task.pk %}" class="delete-button" onclick="return confirmDelete(this);">削除</a>
@@ -130,7 +172,7 @@
             <div id="taskCreateModal" class="modal">
                 <div class="modal-content">
                     <span class="close">&times;</span>
-                    <h2>タスク作成</h2>
+                    <h3 style="font-weight: bold;">タスク作成</h3>
                     <form method="post" action="{% url 'todo:task_create' %}">
                         {% csrf_token %}
                         {% if form.errors %}
@@ -182,10 +224,10 @@
     .my-goal-list {
         position: fixed;
         z-index: 1;
-        top: 100px;
-        left: 30px;
+        top: 120px;
+        left: 50px;
         height: auto;
-        width: 390px;
+        width: 350px;
         border: 2px solid #ccc;
         box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.05);
         border-radius: 5%;
@@ -195,6 +237,55 @@
         margin: 0 auto;
         padding: 30px 0;
     }
+
+    /* アコーディオンjs */
+    .js-accordion--close{
+        display: none;
+    }
+    .accordion-box{
+        height:0;
+        overflow:hidden;
+        transition:.4s ease;
+    }
+    .js-accordion{
+        position: relative;
+        padding: 0 35px 0 10px;
+    }
+    .js-accordion::before{
+        content: "";
+        width: 2px;
+        height: 16px;
+        background: #000;
+        position: absolute;
+        right: 18px;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        transition: .6s ease;
+    }
+    .js-accordion::after{
+        content: "";
+        width: 16px;
+        height: 2px;
+        background: #000;
+        position: absolute;
+        right: 11px;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        transition: .6s ease;
+    }
+    .js-accordion.is-accordion--open::before{
+        transform: rotate(90deg);
+    }
+    .js-accordion.is-accordion--open::after{
+        transform: rotate(-180deg);
+    }
+    .js-accordion.is-accordion--open + .accordion-box{
+        height: auto;
+        opacity: 1;
+    }
+
     .messages-content {
         height: 60px;
     }
@@ -229,40 +320,37 @@
         background-color: #ccc;
     }
 
-    .tabcontent {
+    .tab-content {
         display: none;
-        padding: 20px;
+        padding: 30px;
         height: 70vh;
         border: 2px solid #ccc;
     }
 
     .task-list, .completed-tasks {
-        background-color: #fff;
-        padding: 20px;
         border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         text-align: left;
-        max-width: 600px;
-        margin: 0 auto;
-        max-height: 580px;
+        height: 100%;
         overflow-y: auto;
+        box-sizing: border-box;
     }
 
     .task {
+        background-color: #fff;
+        border: 2px solid #ccc;
+        padding:10px 20px;
         display: flex;
-        margin-bottom: 10px;
+        margin-bottom: -1px;
     }
 
     .task input[type="checkbox"] {
+        transform: scale(1.5);
+        -webkit-transform: scale(1.5);
         margin-right: 10px;
     }
 
-    .task.completed {
+    .completed {
         color: #888;
-    }
-
-    .task.completed.content {
-        margin-right: 10px;
     }
 
     .edit-button, .restoration-button, .delete-button {
@@ -330,10 +418,10 @@
 
     .modal-content {
         background-color: #fefefe;
-        margin: 15% auto;
+        margin: 10% auto;
         padding: 20px;
         border: 1px solid #888;
-        width: 50%;
+        width: 40%;
         position: relative;
     }
 
@@ -380,6 +468,34 @@
     .btn-primary:hover {
         background-color: #0056b3;
     }
+
+    table {
+        width: 100%;
+        border-collapse:separate;
+        border-spacing:10px 15px;
+    }
+
+    th {
+        width: 20%;
+        border-left: 3px solid #006400;
+        padding-left: 15px;
+        text-align: left;
+    }
+    th, td {
+        padding: 10px;
+    }
+    label {
+        margin: 0;
+    }
+    td {
+        width: 80%;
+    }
+    td input {
+        width: 100%;
+    }
+    td textarea {
+        width: 100%;
+    }
 </style>
 <script type="text/javascript">
     setTimeout(function() {
@@ -389,17 +505,30 @@
         }
     }, 5000);  // 5秒後にメッセージを非表示にする
 
-    function openTab(evt, tabName) {
-        var i, tabcontent, tablinks;
+    let jsAccordion = document.querySelectorAll('.js-accordion');
+    jsAccordion.forEach(function(element) {
+        element.addEventListener('click', function(e) {
+            let eleHeight = element.nextElementSibling;
+            if(element.classList.contains('is-accordion--open')){
+            eleHeight.style.height = '0';
+            } else {
+            eleHeight.style.height = eleHeight.scrollHeight + 'px';
+            }
+            element.classList.toggle('is-accordion--open');
+        });
+    });
 
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
+    function openTab(evt, tabName) {
+        var i, tabContent, tabLinks;
+
+        tabContent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabContent.length; i++) {
+            tabContent[i].style.display = "none";
         }
 
-        tablinks = document.getElementsByClassName("tablinks");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        tabLinks = document.getElementsByClassName("tab-links");
+        for (i = 0; i < tabLinks.length; i++) {
+            tabLinks[i].className = tabLinks[i].className.replace(" active", "");
         }
 
         document.getElementById(tabName).style.display = "block";
@@ -408,7 +537,7 @@
 
     // デフォルトで「今日のタスク」タブを開く
     document.addEventListener("DOMContentLoaded", function() {
-        document.querySelector('.tablinks').click();
+        document.querySelector('.tab-links').click();
     });
 
     function myGoalsDelete(element) {
