@@ -3,34 +3,79 @@
 {% block title %}ホーム画面{% endblock %}
 
 {% block content %}
+{% load static %}
+<div class="my-goal-list">
+    <div class="goal-content">
+        <h3 style="text-align: start; font-weight: bold;">今月の目標</h3>
+        {% for goal in my_goals %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <p style="margin: 0; font-weight: bold">{{goal.title}}</p>
+            </div>
+        </div>
+        {% empty %}
+            <p>目標が設定されていません。</p>
+        {% endfor %}
+            <a href="{% url 'todo:set_goal' %}" class="btn btn-info">目標を設定</a>
+        {% if my_goals %}
+            <a href="{% url 'todo:delete_goals' %}" class="btn btn-danger" onclick="return myGoalsDelete(this);">目標を解除</a>
+        {% endif %}
+    </div>
+</div>
 <div class="container" style="padding-top: 70px;">
     <div class="row">
         <div class="col-2"></div>
         <div class="col-8">
+            <div class="messages-content">
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            </div>
             <div class="tab">
-                <button class="tablinks" onclick="openTab(event, 'today')">今日のタスク</button>
-                <button class="tablinks" onclick="openTab(event, 'completed')">完了済みのタスク</button>
+                <button class="tab-links" style="font-weight: bold;" onclick="openTab(event, 'today')">今日のタスク</button>
+                <button class="tab-links" style="font-weight: bold;" onclick="openTab(event, 'createTasks')">作成したタスク</button>
+                <button class="tab-links" style="font-weight: bold;" onclick="openTab(event, 'completed')">完了済みのタスク</button>
             </div>
 
-            <div id="today" class="tabcontent">
+            <div id="today" class="tab-content">
                 <section class="task-list">
-                    <h2>今日のタスク</h2>
                     {% for task in today_tasks %}
                     <div class="task row align-items-center">
-                        <div class="col-8">
-                            <div class="d-flex">
-                                <form method="post" action="{% url 'todo:task_update_status' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="task_id" value="{{ task.id }}">
-                                    <input type="checkbox" id="task{{ task.id }}" name="task_status" onchange="return confirmStatusChange(this);">
-                                    <label for="task{{ task.id }}">
-                                        <h4 style="margin: 0;">{{ task.title }}</h4>
-                                        <p style="margin: 0;">詳細: {{ task.memo }}</p>
-                                    </label>
-                                </form>
+                        <div class="col-9">
+                            <div class="d-flex align-items-center p-2">
+                                <div class="task-input">
+                                    <form method="post" action="{% url 'todo:task_update_status' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                                        <input type="checkbox" id="task{{ task.id }}" name="task_status" onchange="return confirmStatusChange(this);">
+                                    </form>
+                                </div>
+                                <div class="task-title">
+                                    <h4 style="margin: 0; padding-right: 5px; font-weight: bold;">{{ task.title }}</h4>
+                                </div>
+                                <div class="task-due-date-icon">
+                                    <img src="{% static 'todo/images/砂時計アイコン.jpeg' %}" alt="画像" width="23px" height="25px">
+                                </div>
+                                <div class="task-due-date">
+                                    <h5 style="margin: 0; color: #DF5656; font-weight: bold;">{{ task.due_date|date:"G:i" }}まで</h5>
+                                </div>
+                            </div>
+                            <div class="item task-detail">
+                                <button class="js-accordion">
+                                    <div><p style="margin: 0;">詳細</p></div>
+                                </button>
+                                <div class="accordion-box mt-1">
+                                    <p style="margin: 0;">{{ task.memo }}</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <div class="task-button">
                                 <a href="{% url 'todo:task_edit' task.id %}" class="edit-button">編集</a>
                                 <a href="{% url 'todo:task_delete' task.pk %}" class="delete-button" onclick="return confirmDelete(this);">削除</a>
@@ -42,22 +87,79 @@
                     {% endfor %}
                 </section>
             </div>
-
-            <div id="completed" class="tabcontent">
-                <section class="completed-tasks">
-                    <h2>完了済みのタスク</h2>
-                    {% for task in completed_tasks %}
-                    <div class="task completed row align-items-center">
-                        <div class="col-10">
-                            <div class="d-flex">
-                                <div class="content">
-                                    <h4 style="margin: 0;">{{ task.title }}</h4>
-                                    <p style="margin: 0;">詳細: {{ task.memo }}</p>
+            <div id="createTasks" class="tab-content">
+                <section class="task-list">
+                    {% for task in create_tasks %}
+                    <div class="task row align-items-center">
+                        <div class="col-9">
+                            <div class="d-flex align-items-center p-2">
+                                <div class="task-input">
+                                    <form method="post" action="{% url 'todo:task_update_status' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                                        <input type="checkbox" id="task{{ task.id }}" name="task_status" onchange="return confirmStatusChange(this);">
+                                    </form>
+                                </div>
+                                <div class="task-title">
+                                    <h4 style="margin: 0; padding-right: 5px; font-weight: bold;">{{ task.title }}</h4>
+                                </div>
+                                <div class="task-due-date-icon">
+                                    <img src="{% static 'todo/images/砂時計アイコン.jpeg' %}" alt="画像" width="23px" height="25px">
+                                </div>
+                                <div class="task-due-date">
+                                    <h5 style="margin: 0; color: #DF5656; font-weight: bold;">{{ task.due_date|date:"n月j日G:i" }}まで</h5>
+                                </div>
+                            </div>
+                            <div class="item task-detail">
+                                <button class="js-accordion">
+                                    <div><p style="margin: 0;">詳細</p></div>
+                                </button>
+                                <div class="accordion-box mt-1">
+                                    <p style="margin: 0;">{{ task.memo }}</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <div class="task-button">
+                                <a href="{% url 'todo:task_edit' task.id %}" class="edit-button">編集</a>
+                                <a href="{% url 'todo:task_delete' task.pk %}" class="delete-button" onclick="return confirmDelete(this);">削除</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>作成したタスクはありません。</p>
+                    {% endfor %}
+                </section>
+            </div>
+            <div id="completed" class="tab-content">
+                <section class="completed-tasks">
+                    {% for task in completed_tasks %}
+
+                    <div class="task completed row align-items-center">
+                        <div class="col-9">
+                            <div class="d-flex align-items-center p-2">
+                                <div class="task-title">
+                                    <h4 style="margin: 0; padding-right: 10px; font-weight: bold;">{{ task.title }}</h4>
+                                </div>
+                                <div class="task-due-date-icon">
+                                    <img src="{% static 'todo/images/チェックボックスアイコン.jpeg' %}" alt="画像" width="23px" height="25px">
+                                </div>
+                                <div class="task-due-date">
+                                    <h5 style="margin: 0; color: #DF5656; font-weight: bold;">{{ task.updated_at|date:"n月j日G:i" }}</h5>
+                                </div>
+                            </div>
+                            <div class="item task-detail">
+                                <button class="js-accordion">
+                                    <div><p style="margin: 0;">詳細</p></div>
+                                </button>
+                                <div class="accordion-box mt-1">
+                                    <p style="margin: 0;">{{ task.memo }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="task-button">
+                                <a href="{% url 'todo:task_restoration_status' task.pk %}" class="restoration-button" onclick="return submitRestorationForm(this);">復元</a>
                                 <a href="{% url 'todo:task_delete' task.pk %}" class="delete-button" onclick="return confirmDelete(this);">削除</a>
                             </div>
                         </div>
@@ -67,7 +169,45 @@
                     {% endfor %}
                 </section>
             </div>
-            <a href="{% url 'todo:task_create' %}" class="add-task">+ 新しいタスクを追加</a>
+            <div id="taskCreateModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3 style="font-weight: bold;">タスク作成</h3>
+                    <form method="post" action="{% url 'todo:task_create' %}">
+                        {% csrf_token %}
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        <table>
+                            <tr>
+                                <th>タイトル</th>
+                                <td>{{ task_create_form.title }}</td>
+                            </tr>
+                            <tr>
+                                <th>完了期限</th>
+                                <td>{{ task_create_form.due_date }}</td>
+                            </tr>
+                            <tr>
+                                <th>詳細</th>
+                                <td>{{ task_create_form.memo }}</td>
+                            </tr>
+                        </table>
+                        <button type="submit" class="btn btn-primary">作成</button>
+                    </form>
+                </div>
+            </div>
+            <a href="#" class="add-task open-task-create-modal">+ 新しいタスクを追加</a>
         </div>
         <div class="col-2">
             <div style="text-align: end; margin-top: 15px;">
@@ -81,6 +221,80 @@
 </div>
 
 <style>
+    .my-goal-list {
+        position: fixed;
+        z-index: 1;
+        top: 120px;
+        left: 50px;
+        height: auto;
+        width: 350px;
+        border: 2px solid #ccc;
+        box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 5%;
+    }
+    .goal-content {
+        width: 80%;
+        margin: 0 auto;
+        padding: 30px 0;
+    }
+
+    /* アコーディオンjs */
+    .js-accordion--close{
+        display: none;
+    }
+    .accordion-box{
+        height:0;
+        overflow:hidden;
+        transition:.4s ease;
+    }
+    .js-accordion{
+        position: relative;
+        padding: 0 35px 0 10px;
+    }
+    .js-accordion::before{
+        content: "";
+        width: 2px;
+        height: 16px;
+        background: #000;
+        position: absolute;
+        right: 18px;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        transition: .6s ease;
+    }
+    .js-accordion::after{
+        content: "";
+        width: 16px;
+        height: 2px;
+        background: #000;
+        position: absolute;
+        right: 11px;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        transition: .6s ease;
+    }
+    .js-accordion.is-accordion--open::before{
+        transform: rotate(90deg);
+    }
+    .js-accordion.is-accordion--open::after{
+        transform: rotate(-180deg);
+    }
+    .js-accordion.is-accordion--open + .accordion-box{
+        height: auto;
+        opacity: 1;
+    }
+
+    .messages-content {
+        height: 60px;
+    }
+    .messages {
+        margin-top: 5px;
+    }
+    .alert {
+        margin: 0;
+    }
     .tab {
         overflow: hidden;
         display: flex;
@@ -106,45 +320,40 @@
         background-color: #ccc;
     }
 
-    .tabcontent {
+    .tab-content {
         display: none;
-        padding: 20px;
+        padding: 30px;
         height: 70vh;
         border: 2px solid #ccc;
     }
 
     .task-list, .completed-tasks {
-        background-color: #fff;
-        padding: 20px;
         border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         text-align: left;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    .task-list h2, .completed-tasks h2 {
-        margin-top: 0;
+        height: 100%;
+        overflow-y: auto;
+        box-sizing: border-box;
     }
 
     .task {
+        background-color: #fff;
+        border: 2px solid #ccc;
+        padding:10px 20px;
         display: flex;
-        margin-bottom: 10px;
+        margin-bottom: -1px;
     }
 
     .task input[type="checkbox"] {
+        transform: scale(1.5);
+        -webkit-transform: scale(1.5);
         margin-right: 10px;
     }
 
-    .task.completed {
+    .completed {
         color: #888;
     }
 
-    .task.completed.content {
-        margin-right: 10px;
-    }
-
-    .edit-button, .delete-button {
+    .edit-button, .restoration-button, .delete-button {
         background-color: #007bff;
         color: #fff;
         border: none;
@@ -157,12 +366,19 @@
         background-color: #0056b3;
     }
 
+    .restoration-button {
+        background-color: #fd7e14;
+    }
     .delete-button {
         background-color: #dc3545;
     }
 
     .edit-button:hover {
         background-color: #0056b3;
+    }
+
+    .restoration-button:hover {
+        background-color: #e86800;
     }
 
     .delete-button:hover {
@@ -179,25 +395,140 @@
         border-radius: 5px;
         text-align: center;
         cursor: pointer;
-        margin-top: 20px;
+        margin-top: 10px;
     }
 
     .add-task:hover {
         background-color: #218838;
     }
-</style>
-<script>
-    function openTab(evt, tabName) {
-        var i, tabcontent, tablinks;
 
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
+    /* モーダルのスタイル */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 40%;
+        position: relative;
+    }
+
+    .close {
+        color: #aaa;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+    }
+
+    .modal-body {
+        margin-bottom: 20px;
+    }P
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    table {
+        width: 100%;
+        border-collapse:separate;
+        border-spacing:10px 15px;
+    }
+
+    th {
+        width: 20%;
+        border-left: 3px solid #006400;
+        padding-left: 15px;
+        text-align: left;
+    }
+    th, td {
+        padding: 10px;
+    }
+    label {
+        margin: 0;
+    }
+    td {
+        width: 80%;
+    }
+    td input {
+        width: 100%;
+    }
+    td textarea {
+        width: 100%;
+    }
+</style>
+<script type="text/javascript">
+    setTimeout(function() {
+        let messages = document.querySelector('.messages');
+        if (messages) {
+        messages.style.display = 'none';
+        }
+    }, 5000);  // 5秒後にメッセージを非表示にする
+
+    let jsAccordion = document.querySelectorAll('.js-accordion');
+    jsAccordion.forEach(function(element) {
+        element.addEventListener('click', function(e) {
+            let eleHeight = element.nextElementSibling;
+            if(element.classList.contains('is-accordion--open')){
+            eleHeight.style.height = '0';
+            } else {
+            eleHeight.style.height = eleHeight.scrollHeight + 'px';
+            }
+            element.classList.toggle('is-accordion--open');
+        });
+    });
+
+    function openTab(evt, tabName) {
+        var i, tabContent, tabLinks;
+
+        tabContent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabContent.length; i++) {
+            tabContent[i].style.display = "none";
         }
 
-        tablinks = document.getElementsByClassName("tablinks");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        tabLinks = document.getElementsByClassName("tab-links");
+        for (i = 0; i < tabLinks.length; i++) {
+            tabLinks[i].className = tabLinks[i].className.replace(" active", "");
         }
 
         document.getElementById(tabName).style.display = "block";
@@ -206,17 +537,16 @@
 
     // デフォルトで「今日のタスク」タブを開く
     document.addEventListener("DOMContentLoaded", function() {
-        document.querySelector('.tablinks').click();
+        document.querySelector('.tab-links').click();
     });
-</script>
-<script type="text/javascript">
-    function confirmDelete(element) {
-        if (confirm("このタスクを本当に削除しますか？")) {
-            var form = document.createElement('form');
+
+    function myGoalsDelete(element) {
+        if (confirm("設定した目標を本当に解除しますか？")) {
+            let form = document.createElement('form');
             form.method = 'POST';
             form.action = element.href;
 
-            var csrfToken = document.createElement('input');
+            let csrfToken = document.createElement('input');
             csrfToken.type = 'hidden';
             csrfToken.name = 'csrfmiddlewaretoken';
             csrfToken.value = '{{ csrf_token }}';
@@ -227,11 +557,72 @@
         }
         return false;
     }
-</script>
-<script type="text/javascript">
+
+    function confirmDelete(element) {
+        if (confirm("このタスクを本当に削除しますか？")) {
+            let form = document.createElement('form');
+            form.method = 'POST';
+            form.action = element.href;
+
+            let csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+        return false;
+    }
+
     function confirmStatusChange(checkbox) {
         if (confirm(`このタスクを完了済みに変更しますか？`)) {
             checkbox.form.submit();
+        } else {
+            checkbox.checked = false;
+        }
+        return false;
+    }
+
+    document.querySelectorAll('.open-task-create-modal').forEach(function(link) {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            // 対象のモーダルウィンドウを開く
+            const modal = document.querySelector(`#taskCreateModal`);
+            if (modal) {
+                modal.style.display = 'block';
+            }
+
+            // モーダルの閉じるボタンを設定
+            modal.querySelector('.close').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            // モーダルの外をクリックしたときに閉じる処理
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        });
+    });
+
+    function submitRestorationForm(element) {
+        if (confirm("このタスクを復元しますか？")) {
+            let form = document.createElement('form');
+            form.method = 'POST';
+            form.action = element.href;
+
+            let csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
         }
         return false;
     }

@@ -1,14 +1,16 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}TODOアプリ{% endblock %}</title>
+    <title>{% block title %}TaskMate{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
     <header>
-        <h1 style="margin-bottom: 0;">TODOアプリ</h1>
+        <img style="margin:0 20px;" src="{% static 'todo/images/プログラミング課題ロゴ２.jpg' %}" alt="画像" width="50" height="50">
+        <h1 style="margin-bottom: 0;">TaskMate</h1>
         <div>
             {% if request.user.is_authenticated %}
                 <p>ログイン者：{{ request.user.username }}</p>
@@ -47,7 +49,6 @@
         flex-grow: 1;
         text-align: left;
         margin: 0;
-        margin-left: 40px;
     }
 
     header div {

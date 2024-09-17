@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}タスク編集画面{% endblock %}
+{% block title %}目標設定画面{% endblock %}
 
 {% block content %}
 <div class="container" style="padding-top: 70px;">
@@ -12,11 +12,11 @@
                     <a href="{% url 'todo:home' %}">
                         <span class="close">&times;</span>
                     </a>
-                    <h2>タスク編集</h2>
-                    <form method="post" action="{% url 'todo:task_edit' task.id %}">
+                    <h2>目標設定</h2>
+                    <form method="post" action="{% url 'todo:set_goal' %}">
                         {% csrf_token %}
                         {% if form.errors %}
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger" style="margin-bottom: 0;">
                                 <ul>
                                     {% for field in form %}
                                         {% for error in field.errors %}
@@ -29,21 +29,8 @@
                                 </ul>
                             </div>
                         {% endif %}
-                        <table>
-                            <tr>
-                                <th>タイトル</th>
-                                <td>{{ form.title }}</td>
-                            </tr>
-                            <tr>
-                                <th>完了期限</th>
-                                <td>{{ form.due_date }}</td>
-                            </tr>
-                            <tr>
-                                <th>詳細</th>
-                                <td>{{ form.memo }}</td>
-                            </tr>
-                        </table>
-                        <button type="submit" class="btn btn-primary">更新</button>
+                        {{ form.title }}
+                        <button type="submit" class="btn btn-primary">目標を登録</button>
                     </form>
                 </div>
             </div>
