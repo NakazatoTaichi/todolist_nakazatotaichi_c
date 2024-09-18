@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "secret_key")
 DEBUG = os.environ.get("DEBUG", True)
 
 
-ALLOWED_HOSTS = ['todolist_nakazatotaichi_c.onrender.com']
+ALLOWED_HOSTS = ['todolist-nakazatotaichi-c.onrender.com']
 
 
 # Application definition
