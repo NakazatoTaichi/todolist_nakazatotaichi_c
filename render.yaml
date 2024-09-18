@@ -10,7 +10,7 @@ services:
     name: todolist_nakazatotaichi_c
     runtime: python
     buildCommand: "./build.sh"
-    startCommand: "python -m gunicorn todoproject.todoproject.asgi:application -k uvicorn.workers.UvicornWorker"    envVars:
+    startCommand: "python -m gunicorn todoproject.asgi:application -k uvicorn.workers.UvicornWorker"    envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: sql12732097
