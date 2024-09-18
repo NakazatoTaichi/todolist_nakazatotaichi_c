@@ -10,3 +10,4 @@ django-environ
 gunicorn
 psycopg2-binary
 whitenoise
+uvicorn==0.15.0
