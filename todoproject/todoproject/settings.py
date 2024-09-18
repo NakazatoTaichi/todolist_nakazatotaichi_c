@@ -94,7 +94,7 @@ WSGI_APPLICATION = 'todoproject.wsgi.application'
 # }
 
 DATABASES = {
-    'default': dj_database_url.parse('mysql://sql12732097:qmL9DVHUXK＠sql12.freemysqlhosting.net:3306/sql12732097')
+    'default': dj_database_url.parse('mysql://sql12732097:qmL9DVHUXK@sql12.freemysqlhosting.net:3306/sql12732097')
 }
 
 
