@@ -29,7 +29,6 @@ DEBUG = os.environ.get("DEBUG", True)
 DB_NAME = os.environ.get('DB_NAME')
 DB_USER = os.environ.get('DB_USER')
 DB_PASSWORD = os.environ.get('DB_PASSWORD')
-DB_HOST = os.environ.get('DB_HOST')
 
 
 ALLOWED_HOSTS = ['todolist-nakazatotaichi-c.onrender.com']
@@ -88,7 +87,7 @@ DATABASES = {
         'NAME': 'DB_NAME',
         'USER': 'DB_USER',
         'PASSWORD': 'DB_PASSWORD',
-        'HOST': 'DB_HOST',
+        'HOST': 'deploydb',
         'PORT': 3306,
     }
 }

@@ -5,7 +5,7 @@ if [ "$DB_HOST" = "deploydb" ]
 then
     echo "Waiting for MySQL..."
 
-    while ! nc -z $DB_HOST 3306; do
+    while ! nc -z deploydb 3306; do
         sleep 0.1
     done
 
