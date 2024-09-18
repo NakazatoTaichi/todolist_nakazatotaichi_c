@@ -11,7 +11,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /code/
 
-RUN docker-compose run web python manage.py makemigrations
-RUN docker-compose run web python manage.py migrate
-
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 todoproject.todoproject.wsgi:application

@@ -23,7 +23,7 @@ services:
   web:
     build: .
     container_name: dajngo_app
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: sh -c "python3 manage.py runserver 0.0.0.0:8000 && python3 manage.py makemigrations && python3 manage.py migrate && gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 todoproject.todoproject.wsgi:application"
     volumes:
       - .:/code
     ports:
