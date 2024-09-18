@@ -1,8 +1,8 @@
 databases:
-  - name: sql12732097
+  - name: mydatabase
     plan: free
-    databaseName: sql12732097
-    user: sql12732097
+    databaseName: mydatabase
+    user: myuser
 
 services:
   - type: web
@@ -14,7 +14,7 @@ services:
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: sql12732097
+          name: mydatabase
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
