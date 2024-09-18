@@ -83,7 +83,7 @@ DATABASES = {
         'NAME': 'mydatabase',
         'USER': 'myuser',
         'PASSWORD': 'mypassword',
-        'HOST': 'db',
+        'HOST': 'deploydb',
         'PORT': '3306',
     }
 }
