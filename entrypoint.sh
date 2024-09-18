@@ -1,11 +1,11 @@
 #!/bin/sh
 
 # データベースが起動するまで待機
-if [ "$DB_HOST" = "db" ]
+if [ "$DB_HOST" = "deploydb" ]
 then
     echo "Waiting for MySQL..."
 
-    while ! nc -z $DB_HOST $DB_PORT; do
+    while ! nc -z $DB_HOST 3306; do
         sleep 0.1
     done
 
