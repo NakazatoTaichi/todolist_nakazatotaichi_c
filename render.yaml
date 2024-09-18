@@ -1,0 +1,21 @@
+databases:
+  - name: sql12732097
+    plan: free
+    databaseName: sql12732097
+    user: sql12732097
+
+services:
+  - type: web
+    plan: free
+    name: todolist_nakazatotaichi_c
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "python -m gunicorn todoproject.todoproject.asgi:application -k uvicorn.workers.UvicornWorker"    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sql12732097
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
