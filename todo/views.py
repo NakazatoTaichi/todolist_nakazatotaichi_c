@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView as AuthLoginView
 from django.contrib import messages
@@ -19,6 +20,7 @@ from django.views.generic.edit import DeleteView
 from django.core.exceptions import ValidationError
 
 
+@csrf_exempt
 class SignUpView(View):
     def get(self, request):
         form = SignUpForm()
@@ -32,6 +34,7 @@ class SignUpView(View):
             return redirect('todo:home')
         return render(request, 'todo/signup.html', {'form': form})
 
+@csrf_exempt
 class LoginView(AuthLoginView):
     template_name = 'todo/login.html'
 
