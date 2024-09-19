@@ -20,12 +20,12 @@ from django.views.generic.edit import DeleteView
 from django.core.exceptions import ValidationError
 
 
-@csrf_exempt
 class SignUpView(View):
     def get(self, request):
         form = SignUpForm()
         return render(request, 'todo/signup.html', {'form': form})
 
+    @csrf_exempt
     def post(self, request):
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -34,10 +34,10 @@ class SignUpView(View):
             return redirect('todo:home')
         return render(request, 'todo/signup.html', {'form': form})
 
-@csrf_exempt
+
 class LoginView(AuthLoginView):
     template_name = 'todo/login.html'
-
+    @csrf_exempt
     def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, 'ログインしました。')
