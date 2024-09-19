@@ -12,7 +12,7 @@
                     <a href="{% url 'todo:home' %}">
                         <span class="close">&times;</span>
                     </a>
-                    <h2>目標設定</h2>
+                    <h2 style="font-weight: bold;">目標設定</h2>
                     <form method="post" action="{% url 'todo:set_goal' %}">
                         {% csrf_token %}
                         {% if form.errors %}
@@ -29,7 +29,12 @@
                                 </ul>
                             </div>
                         {% endif %}
-                        {{ form.title }}
+                        <table>
+                            <tr>
+                                <th>タイトル</th>
+                                <td>{{ form.title }}</td>
+                            </tr>
+                        </table>
                         <button type="submit" class="btn btn-primary">目標を登録</button>
                     </form>
                 </div>
@@ -55,10 +60,10 @@
 
     .modal-content {
         background-color: #fefefe;
-        margin: 15% auto;
+        margin: 10% auto;
         padding: 20px;
         border: 1px solid #888;
-        width: 50%;
+        width: 40%;
         position: relative;
     }
 
@@ -103,6 +108,26 @@
 
     .btn-primary:hover {
         background-color: #0056b3;
+    }
+    table {
+        width: 100%;
+        border-collapse:separate;
+        border-spacing:10px 15px;
+    }
+    th {
+        width: 20%;
+        border-left: 3px solid #006400;
+        padding-left: 15px;
+        text-align: left;
+    }
+    th, td {
+        padding: 10px;
+    }
+    td {
+        width: 80%;
+    }
+    td input {
+        width: 100%;
     }
 </style>
 {% endblock %}
