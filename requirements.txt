@@ -3,3 +3,11 @@ Django==5.0.6
 sqlparse==0.5.0
 mysqlclient
 pytz==2023.3
+dj-database-url
+dj-static
+python-decouple
+django-environ
+gunicorn
+psycopg2-binary
+whitenoise
+uvicorn==0.15.0

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView as AuthLoginView
 from django.contrib import messages
@@ -24,6 +25,7 @@ class SignUpView(View):
         form = SignUpForm()
         return render(request, 'todo/signup.html', {'form': form})
 
+    @csrf_exempt
     def post(self, request):
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -32,9 +34,10 @@ class SignUpView(View):
             return redirect('todo:home')
         return render(request, 'todo/signup.html', {'form': form})
 
+
 class LoginView(AuthLoginView):
     template_name = 'todo/login.html'
-
+    @csrf_exempt
     def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, 'ログインしました。')
