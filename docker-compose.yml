@@ -2,14 +2,14 @@ version: '3.9'
 
 services:
   db:
-    hostname: 'deploydb'
+    hostname: 'db'
     image: mysql:8.0
     restart: always
     environment:
       MYSQL_DATABASE: 'mydatabase'
       MYSQL_USER: 'myuser'
       MYSQL_PASSWORD: 'mypassword'
-      MYSQL_ROOT_PASSWORD: 'mypassword'
+      MYSQL_ROOT_PASSWORD: 'rootpassword'
     ports:
       - "3306:3306"
     volumes:

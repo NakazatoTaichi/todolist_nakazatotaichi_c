@@ -82,19 +82,15 @@ WSGI_APPLICATION = 'todoproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'DB_NAME',
-#         'USER': 'DB_USER',
-#         'PASSWORD': 'DB_PASSWORD',
-#         'HOST': 'deploydb',
-#         'PORT': 3306,
-#     }
-# }
-
 DATABASES = {
-    'default': dj_database_url.parse('mysql://myuser:mypassword@deploydb:3306/mydatabase')
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres.lazusneypgslvawfawqj',
+        'PASSWORD': 'databasepassword@20040521',
+        'HOST': 'aws-0-ap-northeast-1.pooler.supabase.com',
+        'PORT': 6543,
+    }
 }
 
 
