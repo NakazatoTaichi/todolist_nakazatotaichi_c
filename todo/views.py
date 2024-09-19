@@ -106,7 +106,8 @@ def task_edit(request, pk):
             return redirect('todo:home')
     else:
         form = TaskForm(instance=task)
-        context = {
+
+    context = {
         'form': form,
         'task': task
     }
